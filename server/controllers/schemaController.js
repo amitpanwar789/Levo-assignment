@@ -8,6 +8,7 @@ const checkAppName = (appName,res) => {
   if (!appName || typeof appName !== 'string' || appName.trim().length === 0) {
     return res.status(400).json({ error: 'Application name is required and must be a non-empty string' });
   }
+  return null; // Return null if the application name is valid
 }
 
 // Controller to upload OpenApi Spec
@@ -17,7 +18,12 @@ const uploadSchema = async (req, res) => {
       return res.status(400).json({ error: 'No spec file given' });
     }
     const appName = req.body.application;
-    checkAppName(appName,res)
+
+    const appNameErrorResponse = checkAppName(appName, res);
+    if (appNameErrorResponse) {
+      return appNameErrorResponse;
+    }
+
     const serviceName = req.body.service || null;
     const fileMimetype = req.file.mimetype;
     let specContentString = req.file.buffer.toString('utf8');
@@ -37,10 +43,13 @@ const uploadSchema = async (req, res) => {
       }
 
       // validate openapi spec file
-      validator.validate(specData, {}).catch((error) => {
+      try {
+        await validator.validate(specData, {});
+        console.log('OpenAPI specification validation successful');
+      } catch (error) {
         console.error('OpenAPI specification validation error:', error);
-        return res.status(400).json({ error: 'Invalid OpenAPI specification format' });
-      });
+        return res.status(400).json({ error: 'Invalid OpenAPI specification', details: error });
+      }
 
     } catch (error) {
       return res.status(400).json({ error: `Failed to parse schema file, Check the schema syntax.` });
@@ -74,7 +83,12 @@ const uploadSchema = async (req, res) => {
 const getLatestSchemaByApplication = async (req, res) => {
   try {
     const appName = req.body.application;
-    checkAppName(appName,res)
+
+    const appNameErrorResponse = checkAppName(appName, res);
+    if (appNameErrorResponse) {
+      return appNameErrorResponse; 
+    }
+
     const service = req.body.service||null;
     const latestSchema = await SchemaModal.findOne(
       { applicationName: appName, serviceName: service },
@@ -94,7 +108,12 @@ const getLatestSchemaByApplication = async (req, res) => {
 const getSchemaByApplicationAndVersion = async (req, res) => {
   try {
     const appName = req.body.application;
-    checkAppName(appName,res)
+    
+    const appNameErrorResponse = checkAppName(appName, res);
+    if (appNameErrorResponse) {
+      return appNameErrorResponse; 
+    }
+
     const version = req.body.version;
     if (!version) {
       return res.status(400).json({ error: 'Version is required and must be a number' });
