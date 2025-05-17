@@ -38,7 +38,7 @@ The API provides endpoints to:
 3.  **Configuration:**
     * Create a `.env` file in your backend directory and add the following environment variables:
         ```env
-        MONGO_URI=connectionString # Replace with your MongoDB connection string 
+        MONGO_URI="mongodb://localhost:27017" # Replace with your MongoDB connection string 
         PORT=5000 # Replace with your Port number
         ```
 
@@ -79,8 +79,8 @@ Ensure your backend server is running before executing the CLI commands.
 Use the `levo import` command to upload an OpenAPI specification file.
 
 ```bash
-levo.js import --spec /path/to/your/openapi.json --application my-app
-levo.js import --spec /path/to/your/openapi.yaml --application my-app --service users
+./levo.js import --spec /path/to/your/openapi.json --application my-app
+./levo.js import --spec /path/to/your/openapi.yaml --application my-app --service users
 ```
 
 **2. Get Latest Schema:**
@@ -88,8 +88,8 @@ levo.js import --spec /path/to/your/openapi.yaml --application my-app --service 
 Use the `levo get-latest` command to get latests OpenAPI specification for a application/service.
 
 ```bash
-levo.js get-latest --application my-app
-levo.js get-latest --application my-app --service users
+./levo.js get-latest --application my-app
+./levo.js get-latest --application my-app --service users
 ```
 
 **3. Get specific version of Schema:**
@@ -97,13 +97,13 @@ levo.js get-latest --application my-app --service users
 Use the `levo get-schema-by-version` command to get a particular version of an OpenAPI specification for a application/service.
 
 ```bash
-levo.js get-schema-by-version --application my-app --version 1
-levo.js get-schema-by-version --application my-app --service users --version 2
+./levo.js get-schema-by-version --application my-app --version 1
+./levo.js get-schema-by-version --application my-app --service users --version 2
 ```
 
 **3. Display help for commands**
 
 ```bash
-levo.js --help
-levo.js import --help 
+./levo.js --help
+./levo.js import --help 
 ```
